@@ -1,0 +1,32 @@
+{
+  "name": "shift-shrink",
+  "version": "0.0.0",
+  "description": "Test case reducer for Shift-format JS ASTs",
+  "author": "Shape Security",
+  "homepage": "https://github.com/shapesecurity/shift-shrink-js-js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shapesecurity/shift-shrink-js.git"
+  },
+  "main": "src/shrink.js",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "lint": "eslint .",
+    "test": "ava test/*"
+  },
+  "dependencies": {
+    "shift-ast": "^6.1.0",
+    "shift-parser": "^7.0.3",
+    "shift-reducer": "^6.0.0",
+    "shift-spec": "^2018.0.2",
+    "shift-validator": "^5.0.1"
+  },
+  "devDependencies": {
+    "ava": "^3.15.0",
+    "eslint": "^7.26.0",
+    "shift-codegen": "^7.0.3",
+    "shift-fuzzer": "^2.0.0"
+  }
+}

@@ -1,0 +1,37 @@
+name: check
+
+on: [pull_request]
+
+jobs:
+  pre:
+    name: Prerequisites
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Enforce CLA signature
+        run: curl https://raw.githubusercontent.com/shapesecurity/CLA/HEAD/cla-travis.sh | bash
+
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
