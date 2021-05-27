@@ -12,7 +12,7 @@ npm install shift-shrink
 
 ## Use
 
-The primary interface for this tool takes as input an "interesting" AST (whatever that means for your use case) and a function which determines whether an AST is interesting, and returns the smallest interesting version of that AST it can find. For example, if you've generated a large AST that has different different output when evaluated in V8 versus in SpiderMonkey, you can use this to find a smaller AST that has that property.
+The primary interface for this tool takes as input an "interesting" AST (whatever that means for your use case) and a function which determines whether an AST is interesting, and returns the smallest interesting version of that AST it can find. For example, if you've generated a large AST that has different output when evaluated in V8 versus in SpiderMonkey, you can use this to find a smaller AST that has that property.
 
 It only explores single-step simplifications, so this is not guaranteed to be the smallest possible interesting AST.
 
@@ -51,7 +51,7 @@ let shrunk = await shrink(tree, isStillGood, { path: ['statements', 0, 'body'] }
 
 ## "smaller"
 
-The main goal of this project is to produce "interesting" trees which have fewer nodes in the tree than the original "interesting" example. There are in addition some more subjective rules: for example, `null` is considered to be the smallest expression, plain function expressions are considered to be smaller than arrows or generators, etc. Currently it does not differentiate among literals except that it considers the empty string to be the smallest string. 
+The goal of this project is to produce "interesting" trees which are smaller than the original "interesting" example. "Smaller" is mainly taken to mean having fewer nodes in the AST, but there are in addition some more subjective rules: for example, `null` is considered to be the smallest expression, plain function expressions are considered to be smaller than arrows or generators, etc. Currently it does not differentiate among literals except that it considers the empty string to be the smallest string.
 
 ## Contributing
 
