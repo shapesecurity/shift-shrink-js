@@ -12,7 +12,7 @@ npm install shift-shrink
 
 ## Use
 
-The primary interface for this tool takes as input an "interesting" AST (whatever that means for your use case) and a function which determines whether an AST is interesting, and returns the smallest interesting version of that AST it can find.
+The primary interface for this tool takes as input an "interesting" AST (whatever that means for your use case) and a function which determines whether an AST is interesting, and returns the smallest interesting version of that AST it can find. For example, if you've generated a large AST that has different different output when evaluated in V8 versus in SpiderMonkey, you can use this to find a smaller AST that has that property.
 
 It only explores single-step simplifications, so this is not guaranteed to be the smallest possible interesting AST.
 
