@@ -51,7 +51,7 @@ let shrunk = await shrink(tree, isStillGood, { path: ['statements', 0, 'body'] }
 
 ## "smaller"
 
-The main goal of this project is to produce "interesting" trees which have fewer nodes in the tree than the original "interesting" example. There are in addition some more subjective rules: for example, "null" is considered to be the smallest expression, plain function expressions are considered to be smaller than arrows or generators, etc. Currently it does not differentiate among literals except that it considers the empty string to be the smallest string. 
+The main goal of this project is to produce "interesting" trees which have fewer nodes in the tree than the original "interesting" example. There are in addition some more subjective rules: for example, `null` is considered to be the smallest expression, plain function expressions are considered to be smaller than arrows or generators, etc. Currently it does not differentiate among literals except that it considers the empty string to be the smallest string. 
 
 ## Contributing
 
