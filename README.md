@@ -18,7 +18,7 @@ It only explores single-step simplifications, so this is not guaranteed to be th
 
 If you need to work with JavaScript programs rather than their ASTs, you can use [shift-parser](https://github.com/shapesecurity/shift-parser-js) and [shift-codegen](https://github.com/shapesecurity/shift-codegen-js) to go back and forth between the two.
 
-Because this can take some time, you can provide a `log` callback in the optional third options bag argument which will be called periodically.
+Because this can take some time, you can provide a `log` callback in the optional third options bag argument which will be called periodically. This parameter is intended only to allow humans to confirm it's making progress, not as a consistent part of the API.
 
 ```js
 let { shrink } = require('shift-shrink');
