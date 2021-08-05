@@ -18,7 +18,7 @@ It only explores single-step simplifications, so this is not guaranteed to be th
 
 If you need to work with JavaScript programs rather than their ASTs, you can use [shift-parser](https://github.com/shapesecurity/shift-parser-js) and [shift-codegen](https://github.com/shapesecurity/shift-codegen-js) to go back and forth between the two.
 
-Because this can take some time, you can provide a `log` callback in the optional third options bag argument which will be called periodically. This parameter is intended only to allow humans to confirm it's making progress, not as a consistent part of the API.
+Because this can take some time, you can provide a `log` callback in the optional third options bag argument which will be called periodically. This parameter is intended only to allow humans to confirm it's making progress, not as a consistent part of the API. Additionally, the `onImproved` callback is called whenever a new best candidate is found, so you can see progress (and interrupt the shrinking without losing progress, as long as you persist the result).
 
 ```js
 let { shrink } = require('shift-shrink');
@@ -29,7 +29,7 @@ let testCase = ...;
 let isStillGood = async tree => ...;
 
 // a simpler AST, hopefully. returns `tree` without modification if no reduction is possible
-let shrunk = await shrink(tree, isStillGood, { log: console.log });
+let shrunk = await shrink(tree, isStillGood, { log: console.log, onImproved: tree => fs.writeFileSync('best.js', JSON.stringify(tree), 'utf8') });
 console.log(shrunk);
 ```
 
