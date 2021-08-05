@@ -326,7 +326,7 @@ function* validSubtrees(tree, path = []) {
   }
 }
 
-async function shrink(tree, isStillGood, { log = () => {}, path = [] } = {}) {
+async function shrink(tree, isStillGood, { log = () => {}, path = [], onImproved = () => {} } = {}) {
   if (!await isStillGood(tree)) {
     throw new Error('Input is already not good!');
   }
@@ -339,11 +339,13 @@ async function shrink(tree, isStillGood, { log = () => {}, path = [] } = {}) {
     for (const candidate of validSubtrees(best, path)) {
       if (await isStillGood(candidate)) {
         log('improved!');
+        onImproved(candidate);
         best = candidate;
         improved = true;
         continue search;
+      } else {
+        log('tock');
       }
-      log('tock');
     }
     break;
   }
