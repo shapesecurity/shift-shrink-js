@@ -33,7 +33,10 @@ function* subtrees(node, rootFieldType = null) {
 
       const childFieldTypes = fieldTypes.concat(fieldType ? fieldType.argument : null);
       const childNodeTypes = parentTypes.concat(null);
-      for (let i = 0; i < c.length; ++i) {
+
+      // later code is likely to have fewer dependents than earlier code, so we're more likely to get away with removing later code
+      // so try to remove later things first
+      for (let i = c.length - 1; i >= 0; --i) {
         if (canRemove) {
           const copy = [...c];
           copy.splice(i, 1);
