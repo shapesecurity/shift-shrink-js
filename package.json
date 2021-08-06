@@ -1,6 +1,6 @@
 {
   "name": "shift-shrink",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Test case reducer for Shift-format JS ASTs",
   "author": "Shape Security",
   "homepage": "https://github.com/shapesecurity/shift-shrink-js",
