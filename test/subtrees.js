@@ -6,9 +6,13 @@ let { parseScript } = require('shift-parser');
 let { default: codeGen } = require('shift-codegen');
 let { subtrees } = require('..');
 
-test('subtrees', t => {
-  let actual = [...subtrees(parseScript('console.log(x + y);'))]
+function allSubtrees(src) {
+  return [...subtrees(parseScript(src))]
     .map(tree => codeGen(tree));
+}
+
+test('subtrees', t => {
+  let actual = allSubtrees('console.log(x + y);');
   let expected = [
     '',
     ';',
@@ -27,4 +31,15 @@ test('subtrees', t => {
     'console.log(x+null)',
   ];
   t.deepEqual(expected, actual);
+});
+
+test('subtrees with blocks', t => {
+  let all = allSubtrees('try { foo; bar; } catch (e) { }');
+  t.true(all.includes('{foo;bar}'));
+
+  all = allSubtrees('switch (0) { case x: foo; bar; }');
+  t.true(all.includes('{foo;bar}'));
+
+  all = allSubtrees('function f() { foo; bar; }');
+  t.true(all.includes('{foo;bar}'));
 });

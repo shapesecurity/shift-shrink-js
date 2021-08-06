@@ -7,6 +7,20 @@ const { accessPath, cloneWithReplacement } = require('./util.js');
 
 const expressions = spec.ExpressionStatement.expression.arguments;
 
+const isStatementType = t => t.type === 'Union' && t.arguments.has('ExpressionStatement');
+const isStatementListType = t => t.type === 'List' && isStatementType(t.argument);
+
+// map from names of types which contain a Statement[] field to the name of that field for that type
+const statementLists = new Map(
+  Object.entries(spec)
+    .flatMap(
+      ([k, v]) =>
+        Object.entries(v)
+          .filter(e => isStatementListType(e[1]))
+          .map(e => [k, e[0]]),
+    ),
+);
+
 // passing in the type of the root allows replacing it
 function* subtrees(node, rootFieldType = null) {
   // we search breadth-first, since removing outer nodes is more valuable
@@ -60,6 +74,7 @@ function* subtrees(node, rootFieldType = null) {
     // find/replace the nearest parent for which this is substitutable, if any
     // we do only the nearest because it reduces duplicate candidates when repeatedly shrinking: just a->b and then b->c, instead of also a->c
     let isCandidateForExpressionStatement = expressions.has(type);
+    let isCandidateForBlockStatement = statementLists.has(type);
     for (let i = fieldTypes.length - 2; i >= 1; --i) {
       let parentFieldType = fieldTypes[i];
       if (parentFieldType !== null) {
@@ -75,17 +90,32 @@ function* subtrees(node, rootFieldType = null) {
         if (
           isCandidateForExpressionStatement &&
           parentTypes[i] !== 'ExpressionStatement' &&
-          parentFieldType.type === 'Union' &&
-          parentFieldType.arguments.has('ExpressionStatement')
+          isStatementType(parentFieldType)
         ) {
           yield cloneWithReplacement(node, path.slice(0, i), new Shift.ExpressionStatement({ expression: c }));
           break;
         }
+
+        // special case: a statement list can replace a statement (other than a BlockStatement) if wrapped in a new BlockStatement & Block
+        if (
+          isCandidateForBlockStatement &&
+          parentTypes[i] !== 'BlockStatement' &&
+          isStatementType(parentFieldType)
+        ) {
+          yield cloneWithReplacement(node, path.slice(0, i), new Shift.BlockStatement({ block: new Shift.Block({ statements: c[statementLists.get(type)] }) }));
+          break;
+        }
+
       }
 
       // if this node is already in an ExpressionStatement, we can just let that one be substituted with any parent statements; no need to make a new one
       if (parentTypes[i] === 'ExpressionStatement') {
         isCandidateForExpressionStatement = false;
+      }
+
+      // ditto for Blocks into parent BlockStatement
+      if (parentTypes[i] === 'BlockStatement') {
+        isCandidateForBlockStatement = false;
       }
     }
 
