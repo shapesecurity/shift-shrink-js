@@ -58,7 +58,6 @@ test('fuzzing: all subtrees of random trees are valid and well-formed', async t 
       --i;
       continue;
     }
-    console.log(i);
     for (let subtree of validSubtrees(tree)) {
       if (!valid(subtree)) {
         // we have a minimzer, might as well use it
