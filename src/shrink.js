@@ -28,7 +28,7 @@ function* subtrees(node, rootFieldType = null) {
 
   while (queue.length > 0) {
     const { path, fieldTypes, parentTypes } = queue.shift();
-    const fieldType = fieldTypes[fieldTypes.length - 1];
+    let fieldType = fieldTypes[fieldTypes.length - 1];
     const parentType = parentTypes[parentTypes.length - 1];
     const c = accessPath(node, path);
     if (c === null) {
@@ -67,6 +67,7 @@ function* subtrees(node, rootFieldType = null) {
 
     if (fieldType && fieldType.type === 'Maybe') {
       yield replaceThisNode(null);
+      fieldType = fieldType.argument;
     }
 
     const type = c.type;
@@ -233,29 +234,31 @@ function* subtrees(node, rootFieldType = null) {
         break;
       }
       case 'FunctionDeclaration': {
-        yield replaceThisNode(
-          new Shift.ExpressionStatement({
-            expression: new Shift.FunctionExpression({
-              isAsync: c.isAsync,
-              isGenerator: c.isGenerator,
-              name: c.name === '*default*' ? null : c.name,
-              params: c.params,
-              body: c.body,
-            }),
-          }),
-        );
+        let expression = new Shift.FunctionExpression({
+          isAsync: c.isAsync,
+          isGenerator: c.isGenerator,
+          name: c.name === '*default*' ? null : c.name,
+          params: c.params,
+          body: c.body,
+        });
+        if (isStatementType(fieldType)) {
+          yield replaceThisNode(new Shift.ExpressionStatement({ expression }));
+        } else if (parentType === 'ExportDefault') {
+          yield replaceThisNode(expression);
+        }
         break;
       }
       case 'ClassDeclaration': {
-        yield replaceThisNode(
-          new Shift.ExpressionStatement({
-            expression: new Shift.ClassExpression({
-              name: c.name === '*default*' ? null : c.name,
-              super: c.super,
-              elements: c.elements,
-            }),
-          }),
-        );
+        let expression = new Shift.ClassExpression({
+          name: c.name === '*default*' ? null : c.name,
+          super: c.super,
+          elements: c.elements,
+        });
+        if (isStatementType(fieldType)) {
+          yield replaceThisNode(new Shift.ExpressionStatement({ expression }));
+        } else if (parentType === 'ExportDefault') {
+          yield replaceThisNode(expression);
+        }
         break;
       }
       case 'ClassExpression': {
