@@ -167,9 +167,10 @@ function* subtrees(node, rootFieldType = null) {
         break;
       }
       case 'LiteralRegExpExpression': {
-        if (c.pattern !== 'a') {
+        const BASIC_PATTERN = 'a';
+        if (c.pattern !== BASIC_PATTERN) {
           yield replaceThisNode(new Shift.LiteralRegExpExpression({
-            pattern: 'a',
+            pattern: BASIC_PATTERN,
             global: c.global,
             ignoreCase: c.ignoreCase,
             multiLine: c.multiLine,
