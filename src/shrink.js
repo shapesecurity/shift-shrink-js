@@ -166,6 +166,21 @@ function* subtrees(node, rootFieldType = null) {
         }
         break;
       }
+      case 'LiteralRegExpExpression': {
+        const BASIC_PATTERN = 'a';
+        if (c.pattern !== BASIC_PATTERN) {
+          yield replaceThisNode(new Shift.LiteralRegExpExpression({
+            pattern: BASIC_PATTERN,
+            global: c.global,
+            ignoreCase: c.ignoreCase,
+            multiLine: c.multiLine,
+            dotAll: c.dotAll,
+            unicode: c.unicode,
+            sticky: c.sticky,
+          }));
+        }
+        break;
+      }
       case 'StaticPropertyName': {
         if (c.value !== '') {
           yield replaceThisNode(new Shift.StaticPropertyName({ value: '' }));
