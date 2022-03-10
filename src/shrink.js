@@ -377,7 +377,26 @@ function* validSubtrees(tree, path = []) {
   }
 }
 
-async function shrink(tree, isStillGood, { log = () => {}, path = [], onImproved = () => {} } = {}) {
+function* lookaheadBySize(gen, N, size = v => JSON.stringify(v).length) {
+  let queue = [];
+  let done = false;
+  while (!done) {
+    for (let i = 0; i < N; ++i) {
+      let next = gen.next();
+      if (next.done) {
+        done = true;
+        break;
+      }
+      queue.push(next.value);
+    }
+    let withSize = queue.map(v => ({ v, size: size(v) }));
+    withSize.sort((a, b) => a.size - b.size);
+    yield* withSize.map(item => item.v);
+  }
+}
+
+
+async function shrink(tree, isStillGood, { log = () => {}, path = [], onImproved = () => {}, lookahead = 1 } = {}) {
   if (!await isStillGood(tree)) {
     throw new Error('Input is already not good!');
   }
@@ -387,7 +406,7 @@ async function shrink(tree, isStillGood, { log = () => {}, path = [], onImproved
   let improved = false;
   search: while (true) {
     log('tick');
-    for (const candidate of validSubtrees(best, path)) {
+    for (const candidate of lookaheadBySize(validSubtrees(best, path), lookahead)) {
       if (await isStillGood(candidate)) {
         log('improved!');
         onImproved(candidate);
@@ -407,4 +426,4 @@ async function shrink(tree, isStillGood, { log = () => {}, path = [], onImproved
   return best;
 }
 
-module.exports = { subtrees, validSubtrees, shrink };
+module.exports = { subtrees, validSubtrees, shrink, lookaheadBySize };
