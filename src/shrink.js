@@ -391,9 +391,7 @@ function* lookaheadBySize(gen, N, size = v => JSON.stringify(v).length) {
     }
     let withSize = queue.map(v => ({ v, size: size(v) }));
     withSize.sort((a, b) => a.size - b.size);
-    for (let item of withSize) {
-      yield item.v;
-    }
+    yield* withSize.map(item => item.v);
   }
 }
 
