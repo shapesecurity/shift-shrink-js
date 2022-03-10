@@ -50,6 +50,16 @@ let testCase = parseScript(`
 let shrunk = await shrink(testCase, isStillGood, { path: ['statements', 0, 'body'] });
 ```
 
+### lookahead
+
+By default, the runner will iterate over trees which are reachable by changing one of the top-level AST nodes, then trees reachable by changing one of the one-level-deep AST nodes, and so on.
+
+The options bag takes a `lookahead` option which allows you to specify that it should eagerly generate the specified number of candidates and iterate over them in ascending order of an approximation of AST size. This can considerably improve performance when there are many reductions possible.
+
+```js
+await shrink(testCase, isStillGood, { lookahead: 100 })
+```
+
 ## "smaller"
 
 The goal of this project is to produce "interesting" trees which are smaller than the original "interesting" example. "Smaller" is mainly taken to mean having fewer nodes in the AST, but there are in addition some more subjective rules: for example, `null` is considered to be the smallest expression, plain function expressions are considered to be smaller than arrows or generators, etc. Currently it does not differentiate among literals except that it considers the empty string to be the smallest string.
