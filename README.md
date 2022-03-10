@@ -22,14 +22,15 @@ Because this can take some time, you can provide a `log` callback in the optiona
 
 ```js
 let { shrink } = require('shift-shrink');
+let { parseScript } = require('shift-parser');
 
-let testCase = ...;
+let testCase = parseScript('let x = 0;');
 
 // non-async functions also work, but `shrink` will still be async
 let isStillGood = async tree => ...;
 
-// a simpler AST, hopefully. returns `tree` without modification if no reduction is possible
-let shrunk = await shrink(tree, isStillGood, { log: console.log, onImproved: tree => fs.writeFileSync('best.js', JSON.stringify(tree), 'utf8') });
+// a simpler AST, hopefully. returns `testCase` without modification if no reduction is possible
+let shrunk = await shrink(testCase, isStillGood, { log: console.log, onImproved: tree => fs.writeFileSync('best.js', JSON.stringify(tree), 'utf8') });
 console.log(shrunk);
 ```
 
@@ -46,7 +47,7 @@ let testCase = parseScript(`
 `);
 
 // only attempt to shrink the body of `run`
-let shrunk = await shrink(tree, isStillGood, { path: ['statements', 0, 'body'] });
+let shrunk = await shrink(testCase, isStillGood, { path: ['statements', 0, 'body'] });
 ```
 
 ## "smaller"
