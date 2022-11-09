@@ -51,7 +51,6 @@ function isValidButSubtreeIsNotValid(tree) {
 
 test('fuzzing: all subtrees of random trees are valid and well-formed', async t => {
   t.plan(0);
-  t.timeout(30e3); // 30 second
   outer: for (let i = 0; i < 100; ++i) {
     let tree = (Math.random() < 0.5 ? fuzzScript : fuzzModule)();
     if (!valid(tree)) {
