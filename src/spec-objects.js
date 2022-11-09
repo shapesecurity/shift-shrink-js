@@ -1,9 +1,9 @@
 'use strict';
 
-// shfit-spec has fields as an array
+// shift-spec has fields as an array
 // we want random access, so re-wrap as objects
 
-const spec = require('shift-spec').default;
+const spec = require('shift-spec');
 
 const wrapped = Object.create(null);
 
