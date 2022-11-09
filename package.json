@@ -15,7 +15,7 @@
   "scripts": {
     "build": "echo nothing to build",
     "lint": "eslint .",
-    "test": "ava test/*"
+    "test": "ava test/* --timeout=30s"
   },
   "dependencies": {
     "shift-ast": "^7.0.0",
